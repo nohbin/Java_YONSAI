@@ -29,6 +29,9 @@ import nohbin.member.DeleteMemberDialog;
 import nohbin.member.RegMemberDialog;
 import nohbin.member.SearchMemberDialog;
 import nohbin.member.UpdateMemberDialog;
+import nohbin.rent.RentController;
+import nohbin.rent.RentControllerImpl;
+import nohbin.rent.RentVo;
 import nohbin.rent.SearchRentDialog;
 
 public class MainWindow {
@@ -39,15 +42,19 @@ public class MainWindow {
 	JMenuItem memMenu21, memMenu22, memMenu23, memMenu24;
 	JMenuItem rentMenu31, rentMenu32, rentMenu33, rentMenu34;
 	JMenuItem helpMenu41;
-	JPanel jPanel;
-	JLabel lCarName;
-	JTextField tf;
-	JButton searchBtn;
+	JPanel jPanel , jPanel2;
+	JLabel lCarName , lRentName;
+	JTextField tf , rentTf;
+	JButton carSearchBtn , rentSearchBtn;
 	CarController carCtrl;
+	RentController rentCtrl;
 	String[][] carItems;
+	String[] columnNames = { "차번호", "이름", "배기량", "색상", "제조사" };
+	String[] rentColumnNames={"예약번호","시작일","종료일","가격","차량번호","회원번호"};
+	
 	JTable rentTable;
 	RentTableModel model;
-	String[] columnNames = { "차번호", "이름", "배기량", "색상", "제조사" };
+	
 
 	public MainWindow() {
 		// TODO Auto-generated constructor stub
@@ -108,33 +115,50 @@ public class MainWindow {
 		jPanel = new JPanel();
 		lCarName = new JLabel("차량명");
 		tf = new JTextField(10);
-		searchBtn = new JButton("차량 조회 하기");
+		carSearchBtn = new JButton("차량 조회");
+		rentSearchBtn = new JButton("렌트현황 조회");
 		carCtrl = new CarControllerImpl();
+		rentCtrl = new RentControllerImpl();
 		rentTable=new JTable();
-		searchBtn.addActionListener(new ActionListener() {
+		
+		carSearchBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
 				List<CarVo> lists = new ArrayList<>();
 				CarVo car = new CarVo();
 				lists.add(car);
 				
 				lists = carCtrl.listMember();
-				loadTable(lists);
+				loadCarTable(lists);
+			}
+		});
+		
+		rentSearchBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				List<RentVo> lists = new ArrayList<>();
+				RentVo rent = new RentVo();
+				lists.add(rent);
+				
+				lists = rentCtrl.listRent();
+				loadRentTable(lists);
 			}
 		});
 
-		carItems = new String[0][5];
-		model = new RentTableModel(carItems, columnNames);
-		rentTable.setModel(model);
 
 		jPanel.add(lCarName);
 		jPanel.add(tf);
-		jPanel.add(searchBtn);
+		jPanel.add(carSearchBtn);
+		jPanel.add(rentSearchBtn);
 
 		Container con = f.getContentPane();
 		con.add(new JScrollPane(rentTable), BorderLayout.CENTER);
 		con.add(jPanel, "North");
+		
 		f.setLocation(200, 100);
 		f.setSize(800, 600);
 		f.setVisible(true);
@@ -211,7 +235,7 @@ public class MainWindow {
 		}
 	}
 
-	private void loadTable(List<CarVo> lists) {
+	private void loadCarTable(List<CarVo> lists) {
 		String[][] datas = new String[lists.size()][5];
 		for (int i = 0; i < lists.size(); i++) {
 			CarVo car = lists.get(i);
@@ -223,6 +247,20 @@ public class MainWindow {
 		}
 		model = new RentTableModel(datas, columnNames);
 		rentTable.setModel(model);
+	}
+	private void loadRentTable(List<RentVo> lists) {
+		String[][] datas = new String[lists.size()][6];
+		for (int i = 0; i < lists.size(); i++) {
+			RentVo rent = lists.get(i);
+			datas[i][0] = rent.getRent_no();
+			datas[i][1] = rent.getStart_date();
+			datas[i][2] = rent.getEnd_date();
+			datas[i][3] = Integer.toString(rent.getPrice());
+			datas[i][4] = rent.getCarNum();
+			datas[i][5] = rent.getId();
+		}
+		model=new RentTableModel(datas,rentColumnNames);
+    	rentTable.setModel(model);
 	}
 	public static void main(String[] args) {
 		new MainWindow();
