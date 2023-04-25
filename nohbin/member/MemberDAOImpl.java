@@ -17,11 +17,11 @@ public class MemberDAOImpl implements MemberDAO{
     private ResultSet rs;
     SearchMemberDialog search;
 
-	public List<RentVo> listMember(){   
-		 List<RentVo> list =  new ArrayList<RentVo>();
+	public List<MemberVo> listMember(){   
+		 List<MemberVo> list =  new ArrayList<MemberVo>();
 		  try{			
 				connDB();  //DB와 연결하는 메서드 
-				String sql = "select * from member";
+				String sql = "select * from member order by id";
 				pstmt = con.prepareStatement(sql);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
@@ -31,13 +31,13 @@ public class MemberDAOImpl implements MemberDAO{
 					int weight = rs.getInt("weight");
 					int age = rs.getInt("age");
 					
-					  RentVo data = new RentVo();
-					  data.setMemberNum(id);
-					  data.setMemberName(name);
-					  data.setMemberHeight(height);
-					  data.setMemberWeight(weight);
-					  data.setMemberAge(age);
-					  list.add(data);
+					MemberVo data = new MemberVo();
+					data.setMemberNum(id);
+					data.setMemberName(name);
+					data.setMemberHeight(height);
+					data.setMemberWeight(weight);
+					data.setMemberAge(age);
+					list.add(data);
 				}			
 				pstmt.close();
 				rs.close();
@@ -49,17 +49,19 @@ public class MemberDAOImpl implements MemberDAO{
 	} //end list()
 	
 	@Override
-	public List<RentVo> listMember(String index, String search) {
-		 List<RentVo> list =  new ArrayList<RentVo>();
+	public List<MemberVo> listMember(String index, String search) {
+		 List<MemberVo> list =  new ArrayList<MemberVo>();
 		 try {
 		        connDB(); 
 		        String sql = "select * from member";
 		        if (index != null && !index.isEmpty() && search != null && !search.isEmpty()) {
 		            // index와 search가 입력되었을 경우, 조건절 추가
 		            sql += " WHERE " + index + " LIKE ?";
+		            sql += " order by id";
 		            pstmt = con.prepareStatement(sql);
 		            pstmt.setString(1, search);
 		        } else {
+		        	 sql += " order by id";
 		            pstmt = con.prepareStatement(sql);
 		        }
 		        rs = pstmt.executeQuery();
@@ -70,7 +72,7 @@ public class MemberDAOImpl implements MemberDAO{
 					int weight = rs.getInt("weight");
 					int age = rs.getInt("age");
 					
-					  RentVo data = new RentVo();
+					  MemberVo data = new MemberVo();
 					  data.setMemberNum(id);
 					  data.setMemberName(name);
 					  data.setMemberHeight(height);
@@ -88,8 +90,7 @@ public class MemberDAOImpl implements MemberDAO{
 		    return list;
 		}
 	
-
-	public void insertMember(RentVo mem){
+	public void insertMember(MemberVo mem){
 		String memberNum = mem.getMemberNum();
 		String memberName = mem.getMemberName();
 		int memberHeight = mem.getMemberHeight(); 
@@ -106,8 +107,8 @@ public class MemberDAOImpl implements MemberDAO{
 		pstmt.setInt(3, memberHeight);
 		pstmt.setInt(4, memberWeithgt);
 		pstmt.setInt(5, memberAge);
-		pstmt.executeUpdate();
 		
+		pstmt.executeUpdate();
 		pstmt.close();
 		con.close();
 		}catch(Exception e){
@@ -116,15 +117,14 @@ public class MemberDAOImpl implements MemberDAO{
 	}
 			
 	//회원 정보 수정하는 메소드
-	public void updateMember(RentVo mem){
+	public void updateMember(MemberVo mem){
 		String memberNum = mem.getMemberNum();
 		String memberName = mem.getMemberName();
 		int memberHeight = mem.getMemberHeight(); 
 		int memberWeithgt = mem.getMemberWeight();
 		int memberAge = mem.getMemberAge();
-		String sql = "update car set name = ? , heigth = ? , weight = ? , age = ? ";
+		String sql = "update member set name = ? , height = ? , weight = ? , age = ? ";
 		sql += "where id = ?";
-		
 		try {
 			connDB();
 			pstmt = con.prepareStatement(sql);
@@ -142,9 +142,9 @@ public class MemberDAOImpl implements MemberDAO{
 	}
 	
 	//회원 정보 삭제하는 메소드
-	public void deleteMember(RentVo mem){
+	public void deleteMember(MemberVo mem){
 		String memberNum = mem.getMemberNum();
-		String sql = "delete from car where id = ?";
+		String sql = "delete from member where id = ?";
 		try {
 			connDB();
 			pstmt = con.prepareStatement(sql);

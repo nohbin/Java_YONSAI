@@ -22,7 +22,6 @@ public class UpdateCarDialog extends JDialog {
 		setTitle(id);
 		init();
 	}
-	
 	private void init() {
 		//label
 		lCarNum = new JLabel("번호");
@@ -38,8 +37,6 @@ public class UpdateCarDialog extends JDialog {
 		tfMaker = new JTextField(20);
 		updateBtn = new JButton("수정하기");
 		
-		jPanel = new JPanel(new GridLayout(0,2));
-
 		
         
         updateBtn.addActionListener(new ActionListener() {
@@ -73,6 +70,7 @@ public class UpdateCarDialog extends JDialog {
 			}
 		});
         
+        jPanel = new JPanel(new GridLayout(0,2));
         jPanel.add(lCarNum);
 		jPanel.add(tfCarNum);
 		jPanel.add(lCarName);

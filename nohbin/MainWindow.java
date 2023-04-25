@@ -4,7 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -20,6 +22,8 @@ import javax.swing.JTextField;
 
 import nohbin.car.CarController;
 import nohbin.car.CarControllerImpl;
+import nohbin.car.CarDAO;
+import nohbin.car.CarDAOImpl;
 import nohbin.car.CarVo;
 import nohbin.car.DeleteCarDialog;
 import nohbin.car.RegCarDialog;
@@ -29,6 +33,8 @@ import nohbin.member.DeleteMemberDialog;
 import nohbin.member.RegMemberDialog;
 import nohbin.member.SearchMemberDialog;
 import nohbin.member.UpdateMemberDialog;
+import nohbin.rent.DelRentDialog;
+import nohbin.rent.RegRentDialog;
 import nohbin.rent.RentController;
 import nohbin.rent.RentControllerImpl;
 import nohbin.rent.RentVo;
@@ -49,10 +55,10 @@ public class MainWindow {
 	CarController carCtrl;
 	RentController rentCtrl;
 	String[][] carItems;
-	String[] columnNames = { "차번호", "이름", "배기량", "색상", "제조사" };
+	String[] columnNames = { "차번호", "이름", "배기량", "색상", "제조사" ,"렌트현황" };
 	String[] rentColumnNames={"예약번호","시작일","종료일","가격","차량번호","회원번호"};
 	
-	JTable rentTable;
+	JTable carTable , rentTable ;
 	RentTableModel model;
 	
 
@@ -68,8 +74,6 @@ public class MainWindow {
 	}
 
 	protected void startFrame() {
-		f.setJMenuBar(menuBar);
-		menuBar.add(carMenu);
 		carMenu.add(carMenu11 = new JMenuItem("차량 등록"));
 		carMenu.add(carMenu12 = new JMenuItem("차량 조회"));
 		carMenu.addSeparator();
@@ -81,8 +85,7 @@ public class MainWindow {
 		carMenu12.addActionListener(new CarHandler());
 		carMenu13.addActionListener(new CarHandler());
 		carMenu14.addActionListener(new CarHandler());
-
-		menuBar.add(memberMenu);
+		
 		memberMenu.add(memMenu21 = new JMenuItem("회원 등록"));
 		memberMenu.add(memMenu22 = new JMenuItem("회원 조회"));
 		memberMenu.addSeparator();
@@ -96,7 +99,6 @@ public class MainWindow {
 		memMenu24.addActionListener(new MemberHandler());
 
 		// 예약 관리 메뉴 관련 서브 메뉴 항목
-		menuBar.add(rentMenu);
 		rentMenu.add(rentMenu31 = new JMenuItem("예약 등록"));
 		rentMenu.add(rentMenu32 = new JMenuItem("예약 조회"));
 		rentMenu.addSeparator();
@@ -107,48 +109,61 @@ public class MainWindow {
 		rentMenu32.addActionListener(new RentHandler());
 		rentMenu33.addActionListener(new RentHandler());
 		rentMenu34.addActionListener(new RentHandler());
+		
 		// 버전 관리 메뉴 설정
 		menuBar.add(helpMenu);
 		helpMenu.add(helpMenu41 = new JMenuItem("버전"));
-
+		
+		f.setJMenuBar(menuBar);
+		menuBar.add(carMenu);
+		menuBar.add(memberMenu);
+		menuBar.add(rentMenu);
+		
 		// 패널 중앙 차량 조회 코드
 		jPanel = new JPanel();
-		lCarName = new JLabel("차량명");
+		lCarName = new JLabel("차번호");
 		tf = new JTextField(10);
 		carSearchBtn = new JButton("차량 조회");
 		rentSearchBtn = new JButton("렌트현황 조회");
 		carCtrl = new CarControllerImpl();
 		rentCtrl = new RentControllerImpl();
-		rentTable=new JTable();
+		carTable=new JTable();
+		rentTable = new JTable();
+		
 		
 		carSearchBtn.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				refreshCarInfo();
 				List<CarVo> lists = new ArrayList<>();
-				CarVo car = new CarVo();
-				lists.add(car);
-				
-				lists = carCtrl.listMember();
+				String search = tf.getText();
+				if(search != null && !search.isEmpty()) {
+					lists = carCtrl.listCar("carnum",search);
+				}else {
+					CarVo car = new CarVo();
+					lists.add(car);
+					lists = carCtrl.listCar();
+				}
 				loadCarTable(lists);
 			}
 		});
 		
 		rentSearchBtn.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
 				List<RentVo> lists = new ArrayList<>();
+				String search = tf.getText();
+				if(search != null && !search.isEmpty()) {
+					lists = rentCtrl.listRent("carnum",search);
+				}else {
 				RentVo rent = new RentVo();
 				lists.add(rent);
-				
 				lists = rentCtrl.listRent();
+				}
 				loadRentTable(lists);
 			}
 		});
-
 
 		jPanel.add(lCarName);
 		jPanel.add(tf);
@@ -156,11 +171,12 @@ public class MainWindow {
 		jPanel.add(rentSearchBtn);
 
 		Container con = f.getContentPane();
-		con.add(new JScrollPane(rentTable), BorderLayout.CENTER);
+		con.add(new JScrollPane(carTable), BorderLayout.WEST);
+		con.add(new JScrollPane(rentTable), BorderLayout.EAST);
 		con.add(jPanel, "North");
 		
 		f.setLocation(200, 100);
-		f.setSize(800, 600);
+		f.setSize(920, 800);
 		f.setVisible(true);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -168,6 +184,7 @@ public class MainWindow {
 	private class CarHandler implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			refreshCarInfo();
 			System.out.println(e.getActionCommand());
 			if (e.getSource() == carMenu11) {
 				// 차량 등록
@@ -181,19 +198,7 @@ public class MainWindow {
 			} else if (e.getSource() == carMenu14) {
 				// 차량 삭제
 				new DeleteCarDialog("차량삭제 창");
-			} else if (e.getSource() == memMenu21) {
-				// 멤버 등록
-				new RegMemberDialog("회원등록 창");
-			} else if (e.getSource() == memMenu22) {
-				// 맴버 조회
-				new SearchMemberDialog("회원조회 창");
-			} else if (e.getSource() == memMenu23) {
-				// 맴버 수정
-				new UpdateMemberDialog("회원수정 창");
-			} else if (e.getSource() == memMenu24) {
-				new DeleteMemberDialog("회원삭제 창");
-				// 맴버 삭제
-			}
+			} 
 		}
 
 	}
@@ -212,8 +217,8 @@ public class MainWindow {
 				// 맴버 수정
 				new UpdateMemberDialog("회원수정 창");
 			} else if (e.getSource() == memMenu24) {
-				new DeleteMemberDialog("회원삭제 창");
 				// 맴버 삭제
+				new DeleteMemberDialog("회원삭제 창");
 			}
 		}
 
@@ -224,19 +229,23 @@ public class MainWindow {
 		public void actionPerformed(ActionEvent e) {
 			System.out.println(e.getActionCommand());
 			if (e.getSource() == rentMenu31) {
-
+				// 렌트 등록
+				new RegRentDialog("렌트 등록");
 			} else if (e.getSource() == rentMenu32) {
+				// 렌트 조회
 				new SearchRentDialog("렌트 관리");
 			} else if (e.getSource() == rentMenu33) {
-
+				//렌트 수정
+				
 			} else if (e.getSource() == rentMenu34) {
-
+				// 렌트 삭제
+				new DelRentDialog("렌트 삭제");
 			}
 		}
 	}
 
 	private void loadCarTable(List<CarVo> lists) {
-		String[][] datas = new String[lists.size()][5];
+		String[][] datas = new String[lists.size()][6];
 		for (int i = 0; i < lists.size(); i++) {
 			CarVo car = lists.get(i);
 			datas[i][0] = car.getCarNum();
@@ -244,17 +253,19 @@ public class MainWindow {
 			datas[i][2] = Integer.toString(car.getCarSize());
 			datas[i][3] = car.getCarColor();
 			datas[i][4] = car.getCarMaker();
+			datas[i][5] = car.getRentGood();
 		}
 		model = new RentTableModel(datas, columnNames);
-		rentTable.setModel(model);
+		carTable.setModel(model);
 	}
+	
 	private void loadRentTable(List<RentVo> lists) {
 		String[][] datas = new String[lists.size()][6];
 		for (int i = 0; i < lists.size(); i++) {
 			RentVo rent = lists.get(i);
 			datas[i][0] = rent.getRent_no();
-			datas[i][1] = rent.getStart_date();
-			datas[i][2] = rent.getEnd_date();
+			datas[i][1] = Integer.toString(rent.getStart_date());
+			datas[i][2] = Integer.toString(rent.getEnd_date());
 			datas[i][3] = Integer.toString(rent.getPrice());
 			datas[i][4] = rent.getCarNum();
 			datas[i][5] = rent.getId();
@@ -262,8 +273,13 @@ public class MainWindow {
 		model=new RentTableModel(datas,rentColumnNames);
     	rentTable.setModel(model);
 	}
-	public static void main(String[] args) {
-		new MainWindow();
+	
+	private void refreshCarInfo() {
+		Date nowDate = new Date();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyMMdd");
+		int intNowDate = Integer.parseInt(simpleDateFormat.format(nowDate));
+		CarDAO c = new CarDAOImpl();
+		c.updateCar(null, intNowDate);
+		System.out.println("차량 렌트 정보 업데이트 완료");
 	}
-
 }

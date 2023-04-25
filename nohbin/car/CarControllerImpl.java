@@ -7,38 +7,38 @@ public class CarControllerImpl  implements CarController{
 	public CarDAO dao;
 	
 	@Override
-	public List<CarVo> listMember() {
+	public List<CarVo> listCar() {
 	List<CarVo> lst = new ArrayList<CarVo>();
 		dao = new CarDAOImpl();
-		lst = dao.listMember();
+		lst = dao.listCar();
 		return lst;
 	}
 
 	@Override
-	public List<CarVo> listMember(String index, String search) {
+	public List<CarVo> listCar(String index, String search) {
 		List<CarVo> lst = new ArrayList<CarVo>();
 	    dao = new CarDAOImpl();
-	    lst = dao.listMember(index, search); // 새로운 인자 추가
+	    lst = dao.listCar(index, search); // 새로운 인자 추가
 	    return lst;
 	}
 
 	@Override
 	public void insertCar(CarVo carVo) {
 		dao = new CarDAOImpl();
-		dao.insertMember(carVo);
+		dao.insertCar(carVo);
 		
 	}
 
 	@Override
 	public void updateCar(CarVo carVo) {
 		dao = new CarDAOImpl();
-		dao.updateMember(carVo);
+		dao.updateCar(carVo);
 	}
 
 	@Override
 	public void deleteCar(CarVo carVo) {
 		dao = new CarDAOImpl();
-		dao.deleteMember(carVo);
+		dao.deleteCar(carVo);
 		
 	}
 

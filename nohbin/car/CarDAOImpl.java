@@ -1,9 +1,7 @@
 package nohbin.car;
 
 
-import javax.sql.*;
 import java.sql.*;
-import javax.naming.*;
 import java.util.*;
 
 public class CarDAOImpl implements CarDAO{
@@ -17,11 +15,11 @@ public class CarDAOImpl implements CarDAO{
     private ResultSet rs;
     SearchCarDialog search;
 
-	public List<CarVo> listMember(){   
+	public List<CarVo> listCar(){   
 		 List<CarVo> list =  new ArrayList<CarVo>();
 		  try{			
 				connDB();  //DB와 연결하는 메서드 
-				String sql = "select * from Car";
+				String sql = "select * from Car order by carNum";
 				pstmt = con.prepareStatement(sql);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
@@ -30,6 +28,7 @@ public class CarDAOImpl implements CarDAO{
 					int carSize = rs.getInt("carSize");
 					String carColor = rs.getString("carColor");
 					String carMaker = rs.getString("carMaker");
+					String rentGood = rs.getString("rentgood");
 					
 					  CarVo data = new CarVo();
 					  data.setCarNum(carNum);
@@ -37,22 +36,20 @@ public class CarDAOImpl implements CarDAO{
 					  data.setCarSize(carSize);
 					  data.setCarColor(carColor);
 					  data.setCarMaker(carMaker);
+					  data.setRentGood(rentGood);
 					  list.add(data);
 				}			
-				System.out.println("리스트 담기");
 				pstmt.close();
 				rs.close();
 				con.close();
 		  }catch(Exception e){
 			e.printStackTrace();	
 		  }
-
-		  System.out.println("리턴 리스트 완료");
 		  return list;
 	} //end list()
 	
 	@Override
-	public List<CarVo> listMember(String index, String search) {
+	public List<CarVo> listCar(String index, String search) {
 		 List<CarVo> list =  new ArrayList<CarVo>();
 		 try {
 		        connDB(); 
@@ -60,9 +57,11 @@ public class CarDAOImpl implements CarDAO{
 		        if (index != null && !index.isEmpty() && search != null && !search.isEmpty()) {
 		            // index와 search가 입력되었을 경우, 조건절 추가
 		            sql += " WHERE " + index + " LIKE ?";
+		            sql += " order by carNum";
 		            pstmt = con.prepareStatement(sql);
 		            pstmt.setString(1, search);
 		        } else {
+		        	sql += " order by carNum";
 		            pstmt = con.prepareStatement(sql);
 		        }
 		        rs = pstmt.executeQuery();
@@ -72,6 +71,7 @@ public class CarDAOImpl implements CarDAO{
 		            int carSize = rs.getInt("carSize");
 		            String carColor = rs.getString("carColor");
 		            String carMaker = rs.getString("carMaker");
+		            String rentGood = rs.getString("rentgood");
 
 		            CarVo data = new CarVo();
 		            data.setCarNum(carNum);
@@ -79,6 +79,7 @@ public class CarDAOImpl implements CarDAO{
 		            data.setCarSize(carSize);
 		            data.setCarColor(carColor);
 		            data.setCarMaker(carMaker);
+		            data.setRentGood(rentGood);
 		            list.add(data);
 		        }
 		        pstmt.close();
@@ -87,12 +88,11 @@ public class CarDAOImpl implements CarDAO{
 		    } catch (Exception e) {
 		        e.printStackTrace();
 		    }
-
 		    return list;
 		}
 	
 
-	public void insertMember(CarVo car){
+	public void insertCar(CarVo car){
 		String num = car.getCarNum();
 		String name = car.getCarName();
 		int size = car.getCarSize();
@@ -119,7 +119,7 @@ public class CarDAOImpl implements CarDAO{
 	}
 			
 	//회원 정보 수정하는 메소드
-	public void updateMember(CarVo car){
+	public void updateCar(CarVo car){
 		String num = car.getCarNum();
 		String name = car.getCarName();
 		int size = car.getCarSize();
@@ -143,9 +143,30 @@ public class CarDAOImpl implements CarDAO{
 			e.printStackTrace();
 		}
 	}
+	@Override
+	public void updateCar(CarVo car, int date) {
+		String sql;
+		sql = "UPDATE car SET rentgood = CASE"; 
+		sql += " WHEN carnum IN (SELECT carnum FROM renttable)"; 
+		sql += " AND " + date + " <= ANY (SELECT end_date FROM renttable WHERE renttable.carnum = car.carnum)"; 
+		sql += " AND " + date + " >= ANY (SELECT start_date FROM renttable WHERE renttable.carnum = car.carnum)"; 
+		sql += " THEN to_char((SELECT MAX(end_date) FROM renttable WHERE renttable.carnum = car.carnum))";
+		sql += " ELSE '렌트 가능'";
+		sql += " END";
+		try {
+			connDB();
+			pstmt = con.prepareStatement(sql);
+			pstmt.execute();
+			pstmt.close();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 	//회원 정보 삭제하는 메소드
-	public void deleteMember(CarVo car){
+	public void deleteCar(CarVo car){
 		String num = car.getCarNum();
 		String sql = "delete from car where carNum = ?";
 		try {

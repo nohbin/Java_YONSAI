@@ -29,10 +29,6 @@ public class DeleteMemberDialog extends JDialog{
 		lMemberNum = new JLabel("번호");
 		tfMemberNum = new JTextField(20);
 		updateBtn = new JButton("삭제하기");
-		
-		jPanel = new JPanel(new GridLayout(0,2));
-
-		
         
         updateBtn.addActionListener(new ActionListener() {
 			
@@ -40,7 +36,7 @@ public class DeleteMemberDialog extends JDialog{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				String memberNum=tfMemberNum.getText();			
-				RentVo mem = new RentVo();
+				MemberVo mem = new MemberVo();
 				mem.setMemberNum(memberNum);			
 				carCtrl = new MemberControllerImpl();
 				carCtrl.deleteMemeber(mem);
@@ -50,6 +46,7 @@ public class DeleteMemberDialog extends JDialog{
 			}
 		});
         
+        jPanel = new JPanel(new GridLayout(0,2));
         jPanel.add(lMemberNum);
 		jPanel.add(tfMemberNum);
 		add(updateBtn,BorderLayout.NORTH);
@@ -58,7 +55,5 @@ public class DeleteMemberDialog extends JDialog{
         setSize(400,200);
         setModal(true); //항상 부모창 위에 보이게 한다.
         setVisible(true);
-		
-		
 	}
 }

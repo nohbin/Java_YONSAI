@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 
 public class RegCarDialog extends JDialog {
 	JTable table, carTable;
-	JPanel jPanel,namePanel,numPanel,colorPanel,sizePanel,makerPanel;
+	JPanel jPanel;
 	JLabel lCarNum, lCarName, lSize, lColor, lMaker;
 	JTextField tfCarNum, tfCarName, tfSize, tfColor, tfMaker;
 	JButton btnReg;
@@ -25,7 +25,6 @@ public class RegCarDialog extends JDialog {
 		// TODO Auto-generated constructor stub
 		setTitle(id);
 		init();
-		
 	}
 
 	private void init() {
@@ -43,9 +42,8 @@ public class RegCarDialog extends JDialog {
 		tfMaker = new JTextField(20);
 		//event
 		btnReg = new JButton("등록하기");
-
+		
 		jPanel = new JPanel(new GridLayout(0,2));
-
 		jPanel.add(lCarNum);
 		jPanel.add(tfCarNum);
 		jPanel.add(lCarName);
@@ -56,11 +54,8 @@ public class RegCarDialog extends JDialog {
 		jPanel.add(tfColor);
 		jPanel.add(lMaker);
 		jPanel.add(tfMaker);
-		
-		
 
 		btnReg.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -79,7 +74,6 @@ public class RegCarDialog extends JDialog {
 				
 				carCtrl = new CarControllerImpl();
 				carCtrl.insertCar(car);
-			
 
 				System.out.println("등록 완료");
 				// 차량 등록 후 텍스트칸 초기화

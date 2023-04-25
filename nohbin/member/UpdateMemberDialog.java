@@ -22,10 +22,8 @@ public class UpdateMemberDialog extends JDialog {
 		setTitle(id);
 		init();
 	}
-	
 	private void init() {
 		//label
-		// label
 		lMemberNum = new JLabel("번호");
 		lMemberName = new JLabel("이름");
 		lMemberHeight = new JLabel("키");
@@ -39,10 +37,6 @@ public class UpdateMemberDialog extends JDialog {
 		tfMemberAge = new JTextField(20);
 		updateBtn = new JButton("수정하기");
 		
-		jPanel = new JPanel(new GridLayout(0,2));
-
-		
-        
         updateBtn.addActionListener(new ActionListener() {
 			
 			@Override
@@ -54,7 +48,7 @@ public class UpdateMemberDialog extends JDialog {
 				int memberWeight = Integer.parseInt(tfMemberWeight.getText());
 				int memberAge = Integer.parseInt(tfMemberAge.getText());
 				
-				RentVo mem = new RentVo();
+				MemberVo mem = new MemberVo();
 				mem.setMemberNum(memberNum);
 				mem.setMemberName(memberName);
 				mem.setMemberHeight(memberHeight);
@@ -74,6 +68,7 @@ public class UpdateMemberDialog extends JDialog {
 			}
 		});
         
+        jPanel = new JPanel(new GridLayout(0,2));
         jPanel.add(lMemberNum);
 		jPanel.add(tfMemberNum);
 		jPanel.add(lMemberName);

@@ -3,6 +3,7 @@ package nohbin.rent;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,6 @@ public class SearchRentDialog extends JDialog {
     String[] columnNames={"예약번호","시작일","종료일","가격","차량번호","회원번호"};
     private String[] searchByCol = {"rent_no","start_date","end_date","price","carNum","id"};
     private JComboBox<String> searchCombo = new JComboBox<>(searchByCol);
-	
 
 	public SearchRentDialog() {}
 	public SearchRentDialog(String id) {
@@ -97,18 +97,13 @@ public class SearchRentDialog extends JDialog {
 		for (int i = 0; i < lists.size(); i++) {
 			RentVo rent = lists.get(i);
 			datas[i][0] = rent.getRent_no();
-			datas[i][1] = rent.getStart_date();
-			datas[i][2] = rent.getEnd_date();
+			datas[i][1] = Integer.toString(rent.getStart_date());
+			datas[i][2] = Integer.toString(rent.getEnd_date());
 			datas[i][3] = Integer.toString(rent.getPrice());
 			datas[i][4] = rent.getCarNum();
 			datas[i][5] = rent.getId();
 		}
 		model=new RentTableModel(datas,columnNames);
     	rentTable.setModel(model);
-	}
-
-	
-	public static void main(String[] args) {
-		new SearchRentDialog("렌트관리");
 	}
 }

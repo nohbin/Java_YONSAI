@@ -18,24 +18,17 @@ public class DeleteCarDialog extends JDialog{
 	JTextField tfCarNum;
     JButton updateBtn ;
     CarController carCtrl;
-
 	public DeleteCarDialog(String id) {
 		// TODO Auto-generated constructor stub
 		setTitle(id);
 		init();
 	}
-	
 	private void init() {
 		lCarNum = new JLabel("번호");
 		tfCarNum = new JTextField(20);
 		updateBtn = new JButton("삭제하기");
-		
 		jPanel = new JPanel(new GridLayout(0,2));
-
-		
-        
         updateBtn.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -46,7 +39,6 @@ public class DeleteCarDialog extends JDialog{
 				carCtrl.deleteCar(car);
 				System.out.println("삭제 완료");			
 				tfCarNum.setText("");
-				
 			}
 		});
         

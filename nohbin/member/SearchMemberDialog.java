@@ -23,7 +23,6 @@ public class SearchMemberDialog extends JDialog {
 	JLabel lMemberName;
 	JTextField tf ;
     JButton searchAllBtn , searchBtn ;
-    
     String[][] memberItem ;
     JTable rentTable;
     RentTableModel model;
@@ -31,7 +30,6 @@ public class SearchMemberDialog extends JDialog {
     String[] columnNames={"회원번호","이름","키","몸무게","나이"};
     private String[] searchByCol = {"id","name","height","weight","age"};
     private JComboBox<String> searchCombo = new JComboBox<>(searchByCol);
-	
 	
 	public SearchMemberDialog(String id) {
 		setTitle(id);
@@ -50,29 +48,27 @@ public class SearchMemberDialog extends JDialog {
     	searchAllBtn=new JButton("전체조회");
 
 		searchBtn.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				String index = searchCombo.getSelectedItem().toString();
 				String search = tf.getText();
 				System.out.println(index);
-				List<RentVo> lists = new ArrayList<>();
+				List<MemberVo> lists = new ArrayList<>();
 				try {
 		           lists = memCtrl.listMember(index, search);
 		           loadTable(lists);
 		        } catch (Exception ex) {
-		            ex.printStackTrace();
+		           ex.printStackTrace();
 		        }
 			}
 		});
-	
 
 		searchAllBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<RentVo> lists = new ArrayList<>();
-				RentVo mem = new RentVo();
+				List<MemberVo> lists = new ArrayList<>();
+				MemberVo mem = new MemberVo();
 				lists.add(mem);
 				try {
 					lists = memCtrl.listMember();
@@ -81,7 +77,6 @@ public class SearchMemberDialog extends JDialog {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
 			}
     	});    	
 
@@ -102,23 +97,17 @@ public class SearchMemberDialog extends JDialog {
         setVisible(true);   
 	}
 	
-	private void loadTable(List<RentVo> lists) {
+	private void loadTable(List<MemberVo> lists) {
 		String[][] datas = new String[lists.size()][5];
 		for (int i = 0; i < lists.size(); i++) {
-			RentVo mem = lists.get(i);
+			MemberVo mem = lists.get(i);
 			datas[i][0] = mem.getMemberNum();
 			datas[i][1] = mem.getMemberName();
 			datas[i][2] = Integer.toString(mem.getMemberHeight());
 			datas[i][3] = Integer.toString(mem.getMemberWeight());
 			datas[i][4] = Integer.toString(mem.getMemberAge());
 		}
-		System.out.println(datas[0][1]);
 		model=new RentTableModel(datas,columnNames);
     	rentTable.setModel(model);
-	}
-
-	
-	public static void main(String[] args) {
-		new SearchMemberDialog("회원관리");
 	}
 }

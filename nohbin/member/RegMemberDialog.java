@@ -24,7 +24,6 @@ public class RegMemberDialog extends JDialog {
 		// TODO Auto-generated constructor stub
 		setTitle(id);
 		init();
-
 	}
 
 	private void init() {
@@ -33,7 +32,7 @@ public class RegMemberDialog extends JDialog {
 		lMemberName = new JLabel("이름");
 		lMemberHeight = new JLabel("키");
 		lMemberWeight = new JLabel("몸무게");
-		lMemberAge = new JLabel("키");
+		lMemberAge = new JLabel("나이");
 		// table
 		tfMemberNum = new JTextField(20);
 		tfMemberName = new JTextField(20);
@@ -43,18 +42,8 @@ public class RegMemberDialog extends JDialog {
 		// event
 		btnReg = new JButton("등록하기");
 
-		jPanel = new JPanel(new GridLayout(0, 2));
-
-		jPanel.add(lMemberNum);
-		jPanel.add(tfMemberNum);
-		jPanel.add(lMemberName);
-		jPanel.add(tfMemberName);
-		jPanel.add(lMemberHeight);
-		jPanel.add(tfMemberHeight);
-		jPanel.add(lMemberWeight);
-		jPanel.add(tfMemberWeight);
-		jPanel.add(lMemberAge);
-		jPanel.add(tfMemberAge);
+		
+		
 
 		btnReg.addActionListener(new ActionListener() {
 
@@ -67,7 +56,7 @@ public class RegMemberDialog extends JDialog {
 				int memberWeight = Integer.parseInt(tfMemberWeight.getText());
 				int memberAge = Integer.parseInt(tfMemberAge.getText());
 
-				RentVo mem = new RentVo();
+				MemberVo mem = new MemberVo();
 				mem.setMemberNum(memberNum);
 				mem.setMemberName(memberName);
 				mem.setMemberHeight(memberHeight);
@@ -87,7 +76,19 @@ public class RegMemberDialog extends JDialog {
 
 			}
 		});
-
+		
+		jPanel = new JPanel(new GridLayout(0, 2));
+		jPanel.add(lMemberNum);
+		jPanel.add(tfMemberNum);
+		jPanel.add(lMemberName);
+		jPanel.add(tfMemberName);
+		jPanel.add(lMemberHeight);
+		jPanel.add(tfMemberHeight);
+		jPanel.add(lMemberWeight);
+		jPanel.add(tfMemberWeight);
+		jPanel.add(lMemberAge);
+		jPanel.add(tfMemberAge);
+		
 		add(btnReg, BorderLayout.NORTH);
 		add(jPanel, BorderLayout.SOUTH);
 		setLocation(400, 200);
