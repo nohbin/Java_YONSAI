@@ -38,7 +38,7 @@ public  class RentTableModel extends AbstractTableModel {
 	}
 
 	 boolean[] columnEditables = new boolean[] {
-            false, true, true, true
+            true, true, true, true,true
        };
 
      public boolean isCellEditable(int row, int column) {

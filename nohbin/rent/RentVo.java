@@ -1,5 +1,9 @@
 package nohbin.rent;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class RentVo {
 	private String rent_no;
@@ -25,7 +29,20 @@ public class RentVo {
 		return price;
 	}
 	public void setPrice() {
-		this.price = (getEnd_date()-getStart_date())*100000;
+		DateFormat f = new SimpleDateFormat("yyMMdd");
+		try {
+			Date sDate = f.parse(String.valueOf(start_date));
+			Date eDate = f.parse(String.valueOf(end_date));
+			
+			long diff = eDate.getTime() - sDate.getTime();
+			int diffDays = (int) (diff / (24 * 60 * 60 * 1000));
+			
+			this.price = diffDays * 100000;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	public String getCarNum() {
 		return carNum;

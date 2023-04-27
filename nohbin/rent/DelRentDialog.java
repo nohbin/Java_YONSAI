@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class DelRentDialog extends JDialog {
-	JPanel jPanel, panelBtn;
+	JPanel jPanel, btnPanel;
 	JLabel lMemberNum;
 	JTextField tfMemberNum;
 	JButton deleteBtn;
@@ -42,10 +42,13 @@ public class DelRentDialog extends JDialog {
 		});
 		
 		jPanel = new JPanel(new GridLayout(0, 2));
+		btnPanel = new JPanel();
+				
+		btnPanel.add(deleteBtn);	
 		jPanel.add(lMemberNum);
 		jPanel.add(tfMemberNum);
-		add(deleteBtn, BorderLayout.NORTH);
-		add(jPanel, BorderLayout.SOUTH);
+		add(btnPanel, BorderLayout.SOUTH);
+		add(jPanel, BorderLayout.NORTH);
 		setLocation(400, 200);
 		setSize(400, 200);
 		setModal(true); // 항상 부모창 위에 보이게 한다.

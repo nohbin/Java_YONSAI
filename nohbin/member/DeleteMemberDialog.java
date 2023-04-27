@@ -13,7 +13,7 @@ import javax.swing.JTextField;
 
 public class DeleteMemberDialog extends JDialog{
 	
-	JPanel jPanel,panelBtn;
+	JPanel jPanel,btnPanel;
 	JLabel lMemberNum;
 	JTextField tfMemberNum;
     JButton updateBtn ;
@@ -47,10 +47,12 @@ public class DeleteMemberDialog extends JDialog{
 		});
         
         jPanel = new JPanel(new GridLayout(0,2));
+        btnPanel = new JPanel();
         jPanel.add(lMemberNum);
 		jPanel.add(tfMemberNum);
-		add(updateBtn,BorderLayout.NORTH);
-		add(jPanel,BorderLayout.SOUTH);
+		btnPanel.add(updateBtn);
+		add(btnPanel,BorderLayout.SOUTH);
+		add(jPanel,BorderLayout.NORTH);
 		setLocation(400, 200);
         setSize(400,200);
         setModal(true); //항상 부모창 위에 보이게 한다.

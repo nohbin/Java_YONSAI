@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 
 public class RegMemberDialog extends JDialog {
 	JTable table;
-	JPanel jPanel;
+	JPanel jPanel , btnPanel;
 	JLabel lMemberNum, lMemberName, lMemberHeight, lMemberWeight, lMemberAge;
 	JTextField tfMemberNum, tfMemberName, tfMemberHeight, tfMemberWeight, tfMemberAge;
 	JButton btnReg;
@@ -78,6 +78,7 @@ public class RegMemberDialog extends JDialog {
 		});
 		
 		jPanel = new JPanel(new GridLayout(0, 2));
+		btnPanel = new JPanel();
 		jPanel.add(lMemberNum);
 		jPanel.add(tfMemberNum);
 		jPanel.add(lMemberName);
@@ -88,9 +89,9 @@ public class RegMemberDialog extends JDialog {
 		jPanel.add(tfMemberWeight);
 		jPanel.add(lMemberAge);
 		jPanel.add(tfMemberAge);
-		
-		add(btnReg, BorderLayout.NORTH);
-		add(jPanel, BorderLayout.SOUTH);
+		btnPanel.add(btnReg);
+		add(btnPanel, BorderLayout.SOUTH);
+		add(jPanel, BorderLayout.NORTH);
 		setLocation(400, 200);
 		setSize(400, 200);
 		setModal(true); // 항상 부모창 위에 보이게 한다.

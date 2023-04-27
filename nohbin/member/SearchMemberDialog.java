@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 
 import nohbin.RentTableModel;
 
@@ -67,16 +68,9 @@ public class SearchMemberDialog extends JDialog {
 		searchAllBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				List<MemberVo> lists = new ArrayList<>();
-				MemberVo mem = new MemberVo();
-				lists.add(mem);
-				try {
+				List<MemberVo> lists = new ArrayList<>();	
 					lists = memCtrl.listMember();
 					loadTable(lists);
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 			}
     	});    	
 
@@ -89,12 +83,15 @@ public class SearchMemberDialog extends JDialog {
     	add(panelBtn,BorderLayout.SOUTH);
       	memberItem = new String[0][5];
         model=new RentTableModel(memberItem,columnNames);
+        System.out.println("차량");
     	rentTable.setModel(model);
         add(new JScrollPane(rentTable),BorderLayout.CENTER);
         setLocation(300,100);
         setSize(600,600);
         setModal(true);
         setVisible(true);   
+        
+      
 	}
 	
 	private void loadTable(List<MemberVo> lists) {

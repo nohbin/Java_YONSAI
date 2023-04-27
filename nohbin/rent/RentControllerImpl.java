@@ -14,6 +14,7 @@ public class RentControllerImpl  implements RentController{
 		return lst;
 	}
 
+
 	@Override
 	public List<RentVo> listRent(String index, String search) {
 		List<RentVo> lst = new ArrayList<RentVo>();
@@ -33,6 +34,14 @@ public class RentControllerImpl  implements RentController{
 	public void updateRent(RentVo rentVo) {
 		dao = new RentDAOImpl();
 		dao.updateRent(rentVo);
+	}
+	
+
+	@Override
+	public RentVo updateRentData(RentVo rentVo) {
+		dao = new RentDAOImpl();
+		dao.updateDataRent(rentVo);
+		return rentVo;
 	}
 
 	@Override

@@ -12,10 +12,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class UpdateCarDialog extends JDialog {
-	JPanel jPanel,panelBtn;
+	JPanel jPanel,btnPanel;
 	JLabel lCarNum, lCarName, lSize, lColor, lMaker;
 	JTextField tfCarNum, tfCarName, tfSize, tfColor, tfMaker;
-    JButton updateBtn ;
+    JButton updateBtn , conBtn  ;
     CarController carCtrl;
 	
 	public UpdateCarDialog(String id) {
@@ -35,7 +35,8 @@ public class UpdateCarDialog extends JDialog {
 		tfSize = new JTextField(20);
 		tfColor = new JTextField(20);
 		tfMaker = new JTextField(20);
-		updateBtn = new JButton("수정하기");
+		updateBtn = new JButton("수정");
+		conBtn = new JButton("확인");
 		
 		
         
@@ -70,7 +71,25 @@ public class UpdateCarDialog extends JDialog {
 			}
 		});
         
+        conBtn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String carNum=tfCarNum.getText();
+				CarVo car = new CarVo();
+				car.setCarNum(carNum);
+				carCtrl = new CarControllerImpl();
+				carCtrl.updateCardata(car);
+				tfCarNum.setText(car.getCarNum());
+				tfCarName.setText(car.getCarName());
+				tfSize.setText(Integer.toString(car.getCarSize()));
+				tfColor.setText(car.getCarColor());
+				tfMaker.setText(car.getCarMaker());
+			}
+        	
+        });
+        
         jPanel = new JPanel(new GridLayout(0,2));
+        btnPanel = new JPanel();
         jPanel.add(lCarNum);
 		jPanel.add(tfCarNum);
 		jPanel.add(lCarName);
@@ -81,17 +100,14 @@ public class UpdateCarDialog extends JDialog {
 		jPanel.add(tfColor);
 		jPanel.add(lMaker);
 		jPanel.add(tfMaker);
-		
-		add(updateBtn,BorderLayout.NORTH);
-		add(jPanel,BorderLayout.SOUTH);
+		btnPanel.add(updateBtn);
+		btnPanel.add(conBtn);
+		add(btnPanel,BorderLayout.SOUTH);
+		add(jPanel,BorderLayout.NORTH);
 		setLocation(400, 200);
         setSize(400,200);
         setModal(true); //항상 부모창 위에 보이게 한다.
         setVisible(true);
 		
-	}
-	
-	public static void main(String[] args) {
-		new UpdateCarDialog("차량 수정");
 	}
 }

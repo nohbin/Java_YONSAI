@@ -10,6 +10,7 @@ public interface CarController {
 	public void insertCar(CarVo carVo);
 	
 	public void updateCar(CarVo carVo);
+	public CarVo updateCardata(CarVo car);
 	
 	public void deleteCar(CarVo carVo);
 

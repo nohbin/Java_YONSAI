@@ -14,6 +14,7 @@ public class CarControllerImpl  implements CarController{
 		return lst;
 	}
 
+	
 	@Override
 	public List<CarVo> listCar(String index, String search) {
 		List<CarVo> lst = new ArrayList<CarVo>();
@@ -34,6 +35,14 @@ public class CarControllerImpl  implements CarController{
 		dao = new CarDAOImpl();
 		dao.updateCar(carVo);
 	}
+	
+	@Override
+	public CarVo updateCardata(CarVo car) {
+		dao = new CarDAOImpl();
+		dao.updateCardata(car);
+		return car;  
+	}
+
 
 	@Override
 	public void deleteCar(CarVo carVo) {

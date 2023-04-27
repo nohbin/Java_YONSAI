@@ -19,7 +19,7 @@ import nohbin.RentTableModel;
 
 
 public class SearchCarDialog extends JDialog {
-	JPanel panelSearch,panelBtn;
+	JPanel panelSearch,btnPanel;
 	JLabel lCarName;
 	JTextField tf ;
     JButton searchAllBtn , searchBtn ;
@@ -41,7 +41,7 @@ public class SearchCarDialog extends JDialog {
 		carCtrl = new CarControllerImpl();
     	rentTable=new JTable();
     	panelSearch=new JPanel();
-    	panelBtn=new JPanel();
+    	btnPanel=new JPanel();
     	lCarName = new JLabel("차량명");
     	tf=new JTextField(20);
     	searchBtn = new JButton("차량 조회");
@@ -57,7 +57,6 @@ public class SearchCarDialog extends JDialog {
 				List<CarVo> lists = new ArrayList<>();
 		        lists = carCtrl.listCar(index, search);
 		        loadTable(lists);
-
 			}
 		});
 	
@@ -65,8 +64,6 @@ public class SearchCarDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				List<CarVo> lists = new ArrayList<>();
-				CarVo car = new CarVo();
-				lists.add(car);
 				lists = carCtrl.listCar();
 				loadTable(lists);
 			}
@@ -78,7 +75,7 @@ public class SearchCarDialog extends JDialog {
     	panelSearch.add(searchAllBtn);
 
       	add(panelSearch,BorderLayout.NORTH);
-    	add(panelBtn,BorderLayout.SOUTH);
+    	add(btnPanel,BorderLayout.SOUTH);
       	carItems = new String[0][5];
         model=new RentTableModel(carItems,columnNames);
     	rentTable.setModel(model);
@@ -102,9 +99,5 @@ public class SearchCarDialog extends JDialog {
 		}
 		model=new RentTableModel(datas,columnNames);
     	rentTable.setModel(model);
-	}
-	
-	public static void main(String[] args) {
-		new SearchCarDialog("차량관리");
 	}
 }

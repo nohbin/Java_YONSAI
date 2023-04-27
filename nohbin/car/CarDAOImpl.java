@@ -15,6 +15,8 @@ public class CarDAOImpl implements CarDAO{
     private ResultSet rs;
     SearchCarDialog search;
 
+	
+
 	public List<CarVo> listCar(){   
 		 List<CarVo> list =  new ArrayList<CarVo>();
 		  try{			
@@ -56,7 +58,7 @@ public class CarDAOImpl implements CarDAO{
 		        String sql = "select * from Car";
 		        if (index != null && !index.isEmpty() && search != null && !search.isEmpty()) {
 		            // index와 search가 입력되었을 경우, 조건절 추가
-		            sql += " WHERE " + index + " LIKE ?";
+		            sql += " WHERE lower(" + index + ") LIKE lower('%' || ? || '%')";
 		            sql += " order by carNum";
 		            pstmt = con.prepareStatement(sql);
 		            pstmt.setString(1, search);
@@ -148,8 +150,8 @@ public class CarDAOImpl implements CarDAO{
 		String sql;
 		sql = "UPDATE car SET rentgood = CASE"; 
 		sql += " WHEN carnum IN (SELECT carnum FROM renttable)"; 
-		sql += " AND " + date + " <= ANY (SELECT end_date FROM renttable WHERE renttable.carnum = car.carnum)"; 
-		sql += " AND " + date + " >= ANY (SELECT start_date FROM renttable WHERE renttable.carnum = car.carnum)"; 
+		sql += " AND " + date + " <=any (SELECT end_date FROM renttable WHERE renttable.carnum = car.carnum)"; 
+		sql += " AND " + date + " >any (SELECT start_date FROM renttable WHERE renttable.carnum = car.carnum)"; 
 		sql += " THEN to_char((SELECT MAX(end_date) FROM renttable WHERE renttable.carnum = car.carnum))";
 		sql += " ELSE '렌트 가능'";
 		sql += " END";
@@ -163,6 +165,42 @@ public class CarDAOImpl implements CarDAO{
 			e.printStackTrace();
 		}
 		
+	}
+	
+	@Override
+	public CarVo updateCardata(CarVo car) {
+		String num = car.getCarNum();
+		String sql = "select * from car where carnum = ?";
+		try {
+			connDB();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, num);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				 String carNum = rs.getString("carnum");
+		         String carName = rs.getString("carName");
+		         int carSize = rs.getInt("carSize");
+		         String carColor = rs.getString("carColor");
+		         String carMaker = rs.getString("carMaker");
+		         String rentGood = rs.getString("rentgood");
+		         car.setCarNum(carNum);
+		         car.setCarName(carName);
+		         car.setCarSize(carSize);
+		         car.setCarColor(carColor);
+		         car.setCarMaker(carMaker);
+		         car.setRentGood(rentGood);
+		         System.out.println(car.getCarName());
+		         
+			}
+			pstmt.close();
+			rs.close();
+			con.close();
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return car;
 	}
 	
 	//회원 정보 삭제하는 메소드

@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 
 public class RegCarDialog extends JDialog {
 	JTable table, carTable;
-	JPanel jPanel;
+	JPanel jPanel , btnPanel;
 	JLabel lCarNum, lCarName, lSize, lColor, lMaker;
 	JTextField tfCarNum, tfCarName, tfSize, tfColor, tfMaker;
 	JButton btnReg;
@@ -44,6 +44,7 @@ public class RegCarDialog extends JDialog {
 		btnReg = new JButton("등록하기");
 		
 		jPanel = new JPanel(new GridLayout(0,2));
+		btnPanel = new JPanel();
 		jPanel.add(lCarNum);
 		jPanel.add(tfCarNum);
 		jPanel.add(lCarName);
@@ -54,6 +55,7 @@ public class RegCarDialog extends JDialog {
 		jPanel.add(tfColor);
 		jPanel.add(lMaker);
 		jPanel.add(tfMaker);
+		btnPanel.add(btnReg);
 
 		btnReg.addActionListener(new ActionListener() {
 			@Override
@@ -86,8 +88,8 @@ public class RegCarDialog extends JDialog {
 			}
 		});
 		
-		add(btnReg,BorderLayout.NORTH);
-		add(jPanel,BorderLayout.SOUTH);
+		add(btnPanel,BorderLayout.SOUTH);
+		add(jPanel,BorderLayout.NORTH);
 		setLocation(400, 200);
         setSize(400,200);
         setModal(true); //항상 부모창 위에 보이게 한다.

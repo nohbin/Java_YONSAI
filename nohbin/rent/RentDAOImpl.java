@@ -15,6 +15,8 @@ public class RentDAOImpl implements RentDAO{
     private PreparedStatement pstmt;
     private ResultSet rs;
 
+	
+
 	public List<RentVo> listRent(){   
 		 List<RentVo> list =  new ArrayList<RentVo>();
 		 try{			
@@ -47,14 +49,56 @@ public class RentDAOImpl implements RentDAO{
 	} //end list()
 	
 	@Override
+	public List<RentVo> listRent(String search) {
+		List<RentVo> list =  new ArrayList<RentVo>();
+		 try {
+		        connDB(); 
+		        String sql = "select * from rentTable";
+		        if (search != null && !search.isEmpty()) {
+		            // index와 search가 입력되었을 경우, 조건절 추가
+		            sql += " order by ?";
+		            pstmt = con.prepareStatement(sql);
+		            pstmt.setString(1, search);
+		        } else {
+		        	sql += " order by ?";
+		            pstmt = con.prepareStatement(sql);
+		        }
+		        rs = pstmt.executeQuery();
+		        while (rs.next()) {
+		        	String rent_no=rs.getString("rent_no");						 
+					int start_date = rs.getInt("start_date");
+					int end_date = rs.getInt("end_date");
+					String carnum = rs.getString("carnum");
+					String id = rs.getString("id");
+					RentVo data = new RentVo();
+					data.setRent_no(rent_no);
+					data.setStart_date(start_date);
+					data.setEnd_date(end_date);
+					data.setPrice();
+					data.setCarNum(carnum);
+					data.setId(id);
+					list.add(data);
+		        }
+		        pstmt.close();
+		        rs.close();
+		        con.close();
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		    return list;
+	}
+	
+	@Override
 	public List<RentVo> listRent(String index, String search) {
 		 List<RentVo> list =  new ArrayList<RentVo>();
 		 try {
 		        connDB(); 
 		        String sql = "select * from rentTable";
+		        System.out.println(index);
+		        System.out.println(search);
 		        if (index != null && !index.isEmpty() && search != null && !search.isEmpty()) {
 		            // index와 search가 입력되었을 경우, 조건절 추가
-		            sql += " WHERE " + index + " LIKE ?";
+		            sql += " WHERE lower(" + index + ") LIKE lower('%' || ? || '%')";
 		            sql += " order by rent_no";
 		            pstmt = con.prepareStatement(sql);
 		            pstmt.setString(1, search);
@@ -110,10 +154,60 @@ public class RentDAOImpl implements RentDAO{
 	}
 			
 	//회원 정보 수정하는 메소드
-	public void updateRent(RentVo mem){
+	public void updateRent(RentVo rent){
+		String rent_no = rent.getRent_no();
+		String carNum = rent.getCarNum();
+		int start_datet = rent.getStart_date();
+		int end_date = rent.getEnd_date();
+		String id = rent.getId();
 		
+		String sql = "update renttable set start_date = ? , end_date = ? , carnum = ?, id = ?  where rent_no = ?";
+		try {
+			connDB();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, start_datet);
+			pstmt.setInt(2, end_date);
+			pstmt.setString(3, carNum);
+			pstmt.setString(4, id);
+			pstmt.setString(5, rent_no);
+			pstmt.executeUpdate();
+			pstmt.close();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
+	@Override
+	public RentVo updateDataRent(RentVo rent) {
+		String rent_no = rent.getRent_no();
+		String sql = "select * from rentTable where rent_no = ?";
+		try {
+			connDB();
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, rent_no);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				rent_no=rs.getString("rent_no");						 
+				int start_date = rs.getInt("start_date");
+				int end_date = rs.getInt("end_date");
+				String carnum = rs.getString("carnum");
+				String id = rs.getString("id");
+				rent.setRent_no(rent_no);
+				rent.setStart_date(start_date);
+				rent.setEnd_date(end_date);
+				rent.setPrice();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+				rent.setCarNum(carnum);
+				rent.setId(id);
+			}	
+			pstmt.close();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return rent;
+	}
+
 	//회원 정보 삭제하는 메소드
 	public void deleteRent(RentVo rent){
 		String idNum = rent.getRent_no();

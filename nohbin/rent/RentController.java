@@ -10,6 +10,8 @@ public interface RentController {
 	
 	public void updateRent(RentVo rent);
 	
+	public RentVo updateRentData(RentVo rent);
+	
 	public void deleteRent(RentVo rent);
 
 }

@@ -13,7 +13,7 @@ public interface CarDAO {
 	//회원 정보 수정하는 메소드
 	public void updateCar(CarVo car);
 	public void updateCar(CarVo car , int date);
-	
+	public CarVo updateCardata(CarVo car);
 	//회원 정보 삭제하는 메소드
 	public void deleteCar(CarVo car);
 }
